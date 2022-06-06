@@ -41,7 +41,7 @@ button:hover {
   flex-wrap: wrap;
   justify-content: center;
   margin: 5%;
-  gap: 5%;
+  gap: 2%;
   row-gap: 3vw;
   background: rgba(255,255,255,.15);
   border-radius: 1vw;
@@ -67,6 +67,12 @@ button:hover {
 .dice {
   width: 20%;
   position: relative;
+  padding: 1%;
+}
+
+.dice.selected {
+  background: #112;
+  border-radius: 5%;
 }
 
 .dice > img {

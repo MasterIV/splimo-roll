@@ -1,21 +1,21 @@
 class Side {
   constructor(icon, result, add) {
     this.icon = icon;
-    this.result = result;
-    this.add = add;
+    this.result = result || icon;
+    this.add = add | 0;
   }
 }
 
-const success = new Side('success', 'success', 0);
+const success = new Side('success');
 const successExplode = new Side('successExplode', 'success', 1);
-const successAnxiety = new Side('successAnxiety', 'successAnxiety', 0);
-const moon = new Side('moon', 'moon', 0);
+const successAnxiety = new Side('successAnxiety');
+const moon = new Side('moon');
 const moonExplod = new Side('moonExplod', 'moon', 1);
-const sliver = new Side('sliver', 'sliver', 0);
-const xp = new Side('xp', 'xp', 0);
-const armor = new Side('armor', 'armor', 0);
-const staminaRegen = new Side('staminaRegen', 'staminaRegen', 0);
-const anxietyRegen = new Side('anxietyRegen', 'anxietyRegen', 0);
+const sliver = new Side('sliver');
+const xp = new Side('xp');
+const armor = new Side('armor');
+const staminaRegen = new Side('staminaRegen');
+const anxietyRegen = new Side('anxietyRegen');
 
 const dice = {
   'standard': [ successExplode, success, success, success, sliver, moon, xp ],

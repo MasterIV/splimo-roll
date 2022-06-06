@@ -1,13 +1,18 @@
-const Die = ({type, symbol, bonus}) => {
-  return <div className={bonus ? "dice bonus"  : "dice"}>
-    <img src={"img/d20_"+type+".png"} />
-    {symbol && <div className="symbol"><img src={"img/symbol_"+symbol+".png"} alt={symbol} /></div>}
+const Die = ({die, side, bonus, selected, index, onSelect}) => {
+  let classes = "dice";
+
+  if(bonus) classes += " bonus";
+  if(selected) classes += " selected";
+
+  return <div className={classes} onClick={() => onSelect(index)}>
+    <img src={"img/d20_"+die+".png"} />
+    {side && <div className="symbol"><img src={"img/symbol_"+side.icon+".png"} alt={side.icon} /></div>}
   </div>;
 };
 
-const Result = ({result}) => {
-  return <div className="dices">
-      {result.map(({die, side, bonus}, i) => <Die key={i} type={die} symbol={side && side.icon} bonus={bonus} />)}
+const Result = ({result, onSelect}) => {
+  return <div className="dices result">
+      {result.map((result, i) => <Die {...result} key={i} index={i} onSelect={onSelect} />)}
     </div>;
 }
 
