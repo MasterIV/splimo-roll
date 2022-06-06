@@ -124,3 +124,50 @@ button:hover {
   width: 33%;
   margin-bottom: 5%;
 }
+
+@media (orientation: landscape) and (min-width: 1000px) {
+    .dices, .summary {
+      margin: 30px;
+      gap: 10px;
+      row-gap: 10px;
+    }
+
+    .dice {
+      width: 100px;
+      padding: 10px;
+    }
+
+    .dice > input {
+      font-size: 32px;
+    }
+
+    .dice > button {
+      line-height: 50px;
+      font-size: 32px;
+      margin: 10px 0;
+    }
+
+    .submit {
+      gap: 20px;
+      margin: 30px;
+    }
+
+    .submit {
+      flex-direction: row;
+    }
+
+    .submit > button {
+      line-height: 50px;
+      font-size: 32px;
+    }
+
+    .summary > div {
+      width: 80px;
+      font-size: 32px;
+      padding: 10px 15px;
+    }
+
+    .summary .symbol {
+      height: 120px;
+    }
+}
