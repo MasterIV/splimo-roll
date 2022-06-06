@@ -12,7 +12,7 @@ const Die = ({die, side, bonus, selected, index, onSelect}) => {
 
 const Result = ({result, onSelect}) => {
   return <div className="dices result">
-      {result.map((result, i) => <Die {...result} key={i} index={i} onSelect={onSelect} />)}
+      {result.map((result, i) => <Die {...result} key={result.id} index={i} onSelect={onSelect} />)}
     </div>;
 }
 

@@ -4,11 +4,13 @@ import Result from './Result';
 import Summary from './Summary';
 import dice from './Dice';
 
+let id = 1;
+
 const rollDie = (die, bonus, callback) => {
   const roll = (Math.random() * 20) | 0;
   const side = dice[die][roll];
 
-  callback({die, side, bonus});
+  callback({die, side, bonus, id: id++});
 
   if( side && side.add ) rollDie(die, true, callback);
 };
@@ -57,7 +59,7 @@ export default class App extends React.Component {
           const roll = (Math.random() * 20) | 0;
           const side = dice[die][roll];
 
-          result[i] = {die, side, bonus: false};
+          result[i] = {die, side, bonus: false, id: id++};
           if( side && side.add ) rollDie(die, true, r => result.push(r));
         }
       });
