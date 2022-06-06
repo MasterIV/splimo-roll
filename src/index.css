@@ -158,13 +158,14 @@ button:active:after {
 
 @keyframes roll {
   from {transform: rotate(0deg);}
-  to {transform: rotate(3600deg);}
+  to {transform: rotate(1800deg);}
 }
 
 .result > .dice {
   animation-name: roll;
-  animation-duration: 2s;
+  animation-duration: 1s;
   animation-iteration-count: 1;
+  animation-timing-function: ease-out;
 }
 
 @media (orientation: landscape) and (min-width: 1000px) {
