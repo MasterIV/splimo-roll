@@ -19,16 +19,14 @@ io.on("connection", socket => {
 
   socket.on("join", ({name, room}) => {
     console.log(`  ${name} has joined room '${room}'.`);
+
+    socket.rooms.forEach(r => socket.leave(r));
     socket.join(room);
 
+    socket.removeAllListeners("roll");
     socket.on("roll", (roll) => {
       console.log(`  >> ${name} has rolled the dice'.`);
-      io.to(room).emit("roll", {name, roll, type: 'roll'});
-    });
-
-    socket.on("reroll", (roll) => {
-      console.log(`  >> ${name} has re-rolled some dice'.`);
-      io.to(room).emit("roll", {name, roll, type: 'reroll'});
+      io.to(room).emit("roll", {...roll, name});
     });
   });
 });
