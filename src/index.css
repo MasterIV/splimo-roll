@@ -213,4 +213,8 @@ button:active:after {
     .summary .symbol {
       height: 120px;
     }
+    
+    .result {
+      padding: 20px 0;
+    }
 }
