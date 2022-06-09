@@ -168,6 +168,19 @@ button:active:after {
   animation-timing-function: ease-out;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin: 30px;
+}
+
+.row > div {
+  width: 50%;
+  margin: 0;
+  align-items: center;
+}
+
 @media (orientation: landscape) and (min-width: 1000px) {
     .dices, .summary {
       margin: 30px;
@@ -197,6 +210,7 @@ button:active:after {
 
     .submit {
       flex-direction: row;
+      gap: 30px;
     }
 
     .submit > button {
@@ -213,7 +227,7 @@ button:active:after {
     .summary .symbol {
       height: 120px;
     }
-    
+
     .result {
       padding: 20px 0;
     }

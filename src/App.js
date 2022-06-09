@@ -15,6 +15,15 @@ const rollDie = (die, bonus, callback) => {
   if( side && side.add ) rollDie(die, true, callback);
 };
 
+const Buttons = ({total, onRoll, onReset}) => <div className="submit">
+  <button id="roll" className="button" onClick={onRoll}>Roll {total} dice!</button>
+  <button id="reset" className="button" onClick={onReset}>Reset</button>
+</div>;
+
+const Reroll = ({picked, onReroll}) => picked > 0 && <div className="submit">
+  <button id="re-roll" className="button" onClick={onReroll}>Re-Roll selected {picked} dice!</button>
+</div>;
+
 export default class App extends React.Component {
     constructor(props) {
       super(props);
@@ -72,22 +81,25 @@ export default class App extends React.Component {
         const total = Object.values(selection).reduce((a, b) => a+b, 0);
         const picked = result.map(r => r.selected|0).reduce((a, b) => a+b, 0);
 
+        if( window.innerWidth > 1200 ) {
+          return <div className="App">
+              <div class="row">
+                  <Selector selection={selection} onChange={this.change.bind(this)} />
+                  <Summary result={result} />
+              </div>
+
+              <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
+              <Result result={result} onSelect={this.pick.bind(this)} />
+              <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
+            </div>;
+        }
+
         return <div className="App">
-
             <Selector selection={selection} onChange={this.change.bind(this)} />
-
-            <div className="submit">
-              <button id="roll" className="button" onClick={this.roll.bind(this)}>Roll {total} dice!</button>
-              <button id="reset" className="button" onClick={this.reset.bind(this)}>Reset</button>
-            </div>
-
+            <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
             <Summary result={result} />
-
             <Result result={result} onSelect={this.pick.bind(this)} />
-
-            {picked > 0 && <div className="submit">
-              <button id="re-roll" className="button" onClick={this.reroll.bind(this)}>Re-Roll selected {picked} dice!</button>
-            </div>}
+            <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
           </div>;
     }
 }
