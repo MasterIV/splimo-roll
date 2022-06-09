@@ -1,3 +1,5 @@
+import React from 'react';
+
 const DieSelector = ({type, value, onChange}) => {
   const inc = () => onChange(type, value + 1);
   const dec = () => onChange(type, value - 1);

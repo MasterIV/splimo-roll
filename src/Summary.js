@@ -1,3 +1,5 @@
+import React from 'react';
+
 function summarize(result) {
   const summary = {};
 
@@ -19,7 +21,7 @@ const Summary = ({result}) => {
   const summary = summarize(result);
 
   return <div className="summary">
-      {Object.keys(summary).map(symbol => <Icon symbol={symbol} value={summary[symbol]} />)}
+      {Object.keys(summary).map(symbol => <Icon key={symbol} symbol={symbol} value={summary[symbol]} />)}
     </div>;
 }
 

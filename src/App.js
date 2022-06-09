@@ -1,10 +1,14 @@
 import React from 'react';
+
+
 import Selector from './Selector';
 import Result from './Result';
 import Summary from './Summary';
+import {connection, Connect} from './Connect';
 import dice from './Dice';
 
 let id = 1;
+
 
 const rollDie = (die, bonus, callback) => {
   const roll = (Math.random() * 20) | 0;
@@ -29,6 +33,7 @@ export default class App extends React.Component {
       super(props);
 
       this.state = {
+        message: null,
         selection: Object.fromEntries(Object.keys(dice).map(e => [e, 0])),
         result: []
       };
@@ -42,6 +47,7 @@ export default class App extends React.Component {
           rollDie(die, false, r => result.push(r));
       });
 
+      connection.emit('roll', result);
       this.setState({result});
     }
 
@@ -73,32 +79,40 @@ export default class App extends React.Component {
         }
       });
 
+      connection.emit('reroll', result);
       this.setState({result});
     }
 
+    set(message, result) {
+      this.setState({message, result});
+    }
+
     render() {
-        const {result, selection} = this.state;
+        const {result, selection, message} = this.state;
         const total = Object.values(selection).reduce((a, b) => a+b, 0);
         const picked = result.map(r => r.selected|0).reduce((a, b) => a+b, 0);
 
         if( window.innerWidth > 1200 ) {
           return <div className="App">
-              <div class="row">
+              <Connect onChange={this.set.bind(this)} />
+
+              <div className="row">
                   <Selector selection={selection} onChange={this.change.bind(this)} />
                   <Summary result={result} />
               </div>
 
               <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
-              <Result result={result} onSelect={this.pick.bind(this)} />
+              <Result result={result} onSelect={this.pick.bind(this)} message={message} />
               <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
             </div>;
         }
 
         return <div className="App">
+            <Connect onChange={this.set.bind(this)} />
             <Selector selection={selection} onChange={this.change.bind(this)} />
             <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
             <Summary result={result} />
-            <Result result={result} onSelect={this.pick.bind(this)} />
+            <Result result={result} onSelect={this.pick.bind(this)} message={message} />
             <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
           </div>;
     }

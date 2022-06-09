@@ -1,3 +1,5 @@
+import React from 'react';
+
 const Die = ({die, side, bonus, selected, index, onSelect}) => {
   let classes = "dice";
 
@@ -10,8 +12,9 @@ const Die = ({die, side, bonus, selected, index, onSelect}) => {
   </div>;
 };
 
-const Result = ({result, onSelect}) => {
+const Result = ({result, onSelect, message}) => {
   return <div className="dices result">
+      {message && <div className="message">{message}</div>}
       {result.map((result, i) => <Die {...result} key={result.id} index={i} onSelect={onSelect} />)}
     </div>;
 }
