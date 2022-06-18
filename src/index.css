@@ -20,6 +20,37 @@ body {
   padding: 2vw 0;
 }
 
+.log {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 20px;
+  margin: 20px;
+}
+
+.log > .summary {
+  width: 30%;
+  margin: 0;
+  gap: 10px;
+  align-content: start;
+  align-items: flex-start;
+}
+
+.log > .result {
+  width: 70%;
+  margin: 0;
+}
+
+.log > .summary > div {
+  width: 60px;
+  font-size: 32px;
+  padding: 5px;
+}
+
+.log > .summary .symbol {
+  height: 100px;
+}
+
 button {
   width: 100%;
   position: relative;
