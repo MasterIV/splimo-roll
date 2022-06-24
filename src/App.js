@@ -1,11 +1,12 @@
 import React from 'react';
+import { Connect } from './Connect';
+import { socket, SocketContextProvider } from './context/SocketContext';
+import dice from './Dice';
+import Result from './Result';
 
 
 import Selector from './Selector';
-import Result from './Result';
 import Summary from './Summary';
-import {connection, Connect} from './Connect';
-import dice from './Dice';
 
 let id = 1;
 
@@ -47,7 +48,7 @@ export default class App extends React.Component {
           rollDie(die, false, r => result.push(r));
       });
 
-      connection.emit('roll', result);
+      socket.emit('roll', { type: 'roll', roll: result });
       this.setState({result});
     }
 
@@ -79,7 +80,7 @@ export default class App extends React.Component {
         }
       });
 
-      connection.emit('reroll', result);
+      socket.emit('roll', { type: 'reroll', roll: result });
       this.setState({result});
     }
 
@@ -94,26 +95,30 @@ export default class App extends React.Component {
 
         if( window.innerWidth > 1200 ) {
           return <div className="App">
+            <SocketContextProvider>
               <Connect onChange={this.set.bind(this)} />
 
               <div className="row">
-                  <Selector selection={selection} onChange={this.change.bind(this)} />
-                  <Summary result={result} />
+                <Selector selection={selection} onChange={this.change.bind(this)} />
+                <Summary result={result} />
               </div>
 
               <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
               <Result result={result} onSelect={this.pick.bind(this)} message={message} />
               <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
-            </div>;
+            </SocketContextProvider>
+          </div>;
         }
 
         return <div className="App">
-            <Connect onChange={this.set.bind(this)} />
-            <Selector selection={selection} onChange={this.change.bind(this)} />
-            <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
-            <Summary result={result} />
-            <Result result={result} onSelect={this.pick.bind(this)} message={message} />
-            <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
+            <SocketContextProvider>
+              <Connect onChange={this.set.bind(this)} />
+              <Selector selection={selection} onChange={this.change.bind(this)} />
+              <Buttons onRoll={this.roll.bind(this)} onReset={this.reset.bind(this)} total={total} />
+              <Summary result={result} />
+              <Result result={result} onSelect={this.pick.bind(this)} message={message} />
+              <Reroll onReroll={this.reroll.bind(this)} picked={picked} />
+            </SocketContextProvider>
           </div>;
     }
 }
