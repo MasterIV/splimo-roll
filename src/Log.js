@@ -1,8 +1,9 @@
 import React from 'react';
+import { Connect } from './Connect';
+import { SocketContextProvider } from './context/SocketContext';
 
 import Result from './Result';
 import Summary from './Summary';
-import {Connect} from './Connect';
 
 let id = 1;
 
@@ -32,8 +33,10 @@ export default class Log extends React.Component {
         const {rolls} = this.state;
 
         return <div className="App">
+          <SocketContextProvider>
             <Connect onChange={this.add.bind(this)} />
             {rolls.map(r => <Roll {...r} key={r.id} />)}
-          </div>;
-    }
+          </SocketContextProvider>
+        </div>;
+      }
 }
