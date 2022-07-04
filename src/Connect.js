@@ -7,7 +7,7 @@ export const connection = {
     this.socket = io();
 
     this.socket.on('close', () => {
-      statusCallback('Connection Closed...');
+      statusCallback('Disconnected...');
     });
 
     this.socket.on('connect', () => {
