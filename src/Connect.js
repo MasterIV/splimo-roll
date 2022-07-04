@@ -10,10 +10,6 @@ export const connection = {
       statusCallback('Connection Closed...');
     });
 
-    this.socket.on('disconnect', () => {
-      statusCallback('Disconnected...');
-    });
-
     this.socket.on('connect', () => {
       this.socket.emit('join', { name: this.name, room: this.room });
       statusCallback(`Connected to ${this.room} as ${this.name}`);
@@ -25,12 +21,12 @@ export const connection = {
       } else {
         rollCallback(`${name} has rolled:`, roll);
       }
-    })
+    });
   },
 
   join(statusCallback, rollCallback) {
-    this.room = window.prompt("Room (leave empty for new)") || (Math.random() + 1).toString(36).substring(6);
     this.name = this.name || window.prompt("Player Name");
+    this.room = window.prompt("Room (leave empty for new)") || (Math.random() + 1).toString(36).substring(6);
 
     if (!this.socket) {
       this.init(statusCallback, rollCallback);
@@ -53,7 +49,7 @@ export class Connect extends React.Component {
   }
 
   connect() {
-    if (this.state.label !== "Connect") {
+    if (this.state.label === "Connect" || window.confirm("Connect to new room?")) {
       connection.join(label => this.setState({ label }), this.props.onChange);
     }
   }
