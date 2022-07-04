@@ -3,50 +3,64 @@ import React from 'react';
 import { io } from "socket.io-client";
 
 export const connection = {
-  join(name, callback, room) {
-    if(!room)
-      room = (Math.random() + 1).toString(36).substring(6);
-    if(!this.socket)
-      this.socket = io();
+  init(statusCallback, rollCallback) {
+    this.socket = io();
 
-    this.socket.emit('join', {name, room});
+    this.socket.on('close', () => {
+      statusCallback('Connection Closed...');
+    });
 
-    this.socket.on('roll', ({name, roll, type}) => {
-      if(type === 'reroll') {
-        callback(`${name} has re-rolled some dice:`, roll);
+    this.socket.on('disconnect', () => {
+      statusCallback('Disconnected...');
+    });
+
+    this.socket.on('connect', () => {
+      this.socket.emit('join', { name: this.name, room: this.room });
+      statusCallback(`Connected to ${this.room} as ${this.name}`);
+    });
+
+    this.socket.on('roll', ({ name, roll, type }) => {
+      if (type === 'reroll') {
+        rollCallback(`${name} has re-rolled some dice:`, roll);
       } else {
-        callback(`${name} has rolled:`, roll);
+        rollCallback(`${name} has rolled:`, roll);
       }
     })
+  },
 
-    return room;
+  join(statusCallback, rollCallback) {
+    this.room = window.prompt("Room (leave empty for new)") || (Math.random() + 1).toString(36).substring(6);
+    this.name = this.name || window.prompt("Player Name");
+
+    if (!this.socket) {
+      this.init(statusCallback, rollCallback);
+    } else {
+      this.socket.emit('join', { name: this.name, room: this.room });
+      statusCallback(`Connected to ${this.room} as ${this.name}`);
+    }
   },
 
   emit(type, roll) {
-    if(this.socket)
-      this.socket.emit('roll', {type, roll});
+    if (this.socket)
+      this.socket.emit('roll', { type, roll });
   },
 };
 
 export class Connect extends React.Component {
-    constructor(props) {
-      super(props);
-      this.state = {room: null, name: null};
-    }
+  constructor(props) {
+    super(props);
+    this.state = { label: "Connect" };
+  }
 
-    connect() {
-      if(!this.state.room || window.confirm("Connect to new room?")) {
-        const name = this.state.name || window.prompt("Player Name");
-        const room = window.prompt("Room (leave empty for new)");
-        this.setState({name, room: connection.join(name, this.props.onChange, room)});
-      }
+  connect() {
+    if (this.state.label !== "Connect") {
+      connection.join(label => this.setState({ label }), this.props.onChange);
     }
+  }
 
-    render() {
-      const {room, name} = this.state;
-
-      return <button onClick={this.connect.bind(this)} className="connect">
-        {room ? `${name} in ${room}` : "Connect"}
-      </button>;
-    }
+  render() {
+    return <button onClick={this.connect.bind(this)} className="connect">
+      {this.state.label}
+    </button>;
+  }
 };
