@@ -1,4 +1,6 @@
 import React from 'react';
+import { Btn } from './common';
+
 
 const DieSelector = ({type, value, onChange}) => {
   const inc = () => onChange(type, value + 1);
@@ -6,9 +8,9 @@ const DieSelector = ({type, value, onChange}) => {
   const set = e => onChange(type, e.target.value);
 
   return <div className="dice">
-      <button type="button" onClick={inc}>+</button>
+      <Btn onClick={inc}>+</Btn>
       <img src={"img/d20_"+type+".png"} />
-      <button type="button" onClick={dec}>-</button>
+      <Btn onClick={dec}>-</Btn>
       <input type="text" value={value} onChange={set} />
     </div>;
 }

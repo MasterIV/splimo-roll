@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { io } from "socket.io-client";
+import { Btn } from './common';
 
 export const connection = {
   init(statusCallback, rollCallback) {
@@ -36,9 +37,9 @@ export const connection = {
     }
   },
 
-  emit(type, roll) {
+  emit(type, roll, skill) {
     if (this.socket)
-      this.socket.emit('roll', { type, roll });
+      this.socket.emit('roll', { type, roll, skill });
   },
 };
 
@@ -55,8 +56,8 @@ export class Connect extends React.Component {
   }
 
   render() {
-    return <button onClick={this.connect.bind(this)} className="connect">
+    return <Btn onClick={this.connect.bind(this)} id="connect">
       {this.state.label}
-    </button>;
+    </Btn>;
   }
 };
