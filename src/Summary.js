@@ -12,7 +12,7 @@ function summarize(result) {
 
 const Icon = ({symbol, value}) => {
   return <div>
-      <div className="symbol"><img src={"img/symbol_"+symbol+".png"} alt={symbol} /></div>
+      <div className="symbol"><img src={"img/symbol_"+symbol+".png"} title={symbol} alt={symbol} /></div>
       <span>{value}</span>
     </div>;
 };

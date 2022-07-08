@@ -181,6 +181,15 @@ body {
   text-align: center;
 }
 
+.log > .result > .dice {
+  width: 80px;
+  padding: 0;
+}
+
+.log > .summary > div {
+  width: 45px;
+}
+
 @media (orientation: landscape) and (min-width: 1000px) {
     .dices, .summary {
       margin: 30px;
@@ -192,7 +201,6 @@ body {
       width: 100px;
       padding: 10px;
     }
-
     .dice > input {
       font-size: 32px;
     }

@@ -1,7 +1,7 @@
 import { Grid, Modal, Paper, Slide, Slider, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import React from 'react';
-import { Btn } from './common';
+import { Btn, Pool } from './common';
 
 const style = {
     position: 'absolute',
@@ -17,32 +17,35 @@ export default class DiceSlider extends React.Component {
         super(props);
 
         this.state = {
+            mod: 0,
             slider: 0,
         };
     }
 
     close() {
-        this.setState({ slider: 0 });
+        this.setState({ mod: 0, slider: 0 });
         this.props.onCancel();
     }
 
     roll() {
-        const {slider} = this.state;
+        const {slider, mod} = this.state;
         const {pool, skill, onRoll} = this.props;
+        const base = pool + mod;
 
-        this.setState({ slider: 0 });
+        this.setState({ mod: 0, slider: 0 });
         onRoll(slider > 0 ? {
             reckless: slider,
-            standard: pool-slider
+            standard: base-slider
         } : {
             insight: -slider,
-            standard: pool+slider
+            standard: base+slider
         }, skill);
     }
 
     render() {
-        const {slider} = this.state;
+        const {slider, mod} = this.state;
         const {pool, skill} = this.props;
+        const base = pool + mod;
 
         return <Modal open={pool} onClose={this.close.bind(this)}>
             <Paper sx={style}>
@@ -51,15 +54,23 @@ export default class DiceSlider extends React.Component {
                         Select pool for <strong style={{color: '#90caf9'}}>{skill}</strong> check
                     </Typography>
 
-                    <Slider onChange={(e, slider) => this.setState({slider})} value={slider} step={1} min={-pool} max={pool} marks={[
+                    <Pool
+                        name="mod"
+                        value={mod}
+                        onChange={(k,v) => this.setState({[k]: Math.max(v, 1-pool)})}
+                        label="Modifier"
+                        width={300} />
+
+                    <Slider onChange={(e, slider) => this.setState({slider})} value={slider} step={1} min={-base} max={base} marks={[
                         {value: 0, label: 'Neutral'},
-                        {value: -pool, label: 'Insight'},
-                        {value: pool, label: 'Reckless'}
+                        {value: -base, label: 'Insight'},
+                        {value: base, label: 'Reckless'}
                     ]}/>
 
                     <Btn onClick={this.roll.bind(this)}>{slider > 0
-                            ? `Roll ${slider} reckless and ${pool-slider} standard dice.`
-                            : `Roll ${-slider} insight and ${pool+slider} standard dice.`}</Btn>
+                            ? `Roll ${slider} reckless and ${base-slider} standard dice.`
+                            : `Roll ${-slider} insight and ${base+slider} standard dice.`
+                    }</Btn>
                 </Stack>
             </Paper>
         </Modal>;

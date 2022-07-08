@@ -16,18 +16,20 @@ export const connection = {
       statusCallback(`Connected to ${this.room} as ${this.name}`);
     });
 
-    this.socket.on('roll', ({ name, roll, type }) => {
+    this.socket.on('roll', ({ name, roll, type, skill }) => {
       if (type === 'reroll') {
-        rollCallback(`${name} has re-rolled some dice:`, roll);
+        rollCallback(`${name} has re-rolled some dice:`, roll, name);
+      } else if(skill) {
+        rollCallback(`${name} has rolled a ${skill} check:`, roll, name, skill);
       } else {
-        rollCallback(`${name} has rolled:`, roll);
+        rollCallback(`${name} has rolled:`, roll, name);
       }
     });
   },
 
-  join(statusCallback, rollCallback) {
+  join(statusCallback, rollCallback, r) {
     this.name = this.name || window.prompt("Player Name");
-    this.room = window.prompt("Room (leave empty for new)") || (Math.random() + 1).toString(36).substring(6);
+    this.room = r || window.prompt("Room (leave empty for new)") || (Math.random() + 1).toString(36).substring(6);
 
     if (!this.socket) {
       this.init(statusCallback, rollCallback);

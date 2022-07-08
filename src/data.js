@@ -63,6 +63,20 @@ Object.keys(skill_list).forEach(
     )
 );
 
+export const other_list = {
+    Defense: [
+        {label: 'Dodge', xp: 'Acrobatics'},
+        {label: 'Parry', xp: 'Close Combat'},
+    ]
+};
+export const other_list_flat = [];
+
+Object.keys(other_list).forEach(
+    attribute => other_list[attribute].forEach(
+        skill => other_list_flat.push({ attribute, skill })
+    )
+);
+
 export const spell_list = [
     { "School": "Banning", "Spell": "Aura Of Antimagic", "Cast Time": "6", "Complexity": "3", "Power Costs": "3", "Range": "Self", "Duration": "Channel", "Effect": "If you or an ally within 10m becomes the target of a spell, the spellcaster suffers -2 penalty.", "Enhancement 1": "2 x Moon: Increase the penalty by another -1.", "Enhancement 2": "Sliver: Extend the radius of the aura by another +5m." },
     { "School": "Banning", "Spell": "Ban Fairy", "Cast Time": "3", "Complexity": "6\nvs Discipline", "Power Costs": "5", "Range": "5m", "Duration": "-", "Effect": "Immediately force a fairy to retreat back to its home domain.", "Enhancement 1": "Moon: You get a glimpse about the target's home domain. You gain +6 pool for any tests that will help you find it in the future.", "Enhancement 2": "Sliver: Increase the maximum range by +5m." },

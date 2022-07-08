@@ -11,6 +11,14 @@ const spell_map = spell_list.reduce((map, s) => {
     return map;
 }, {});
 
+const sortSpells = (a,b) => {
+    if(spell_map[a].School == spell_map[b].School) {
+        return a > b ? 1 : -1;
+    } else {
+        return spell_map[a].School > spell_map[b].School ? 1 : -1;
+    }
+}
+
 export default class Spells extends React.Component {
     constructor(props) {
         super(props);
@@ -52,7 +60,7 @@ export default class Spells extends React.Component {
                 </TableHead>
 
                 <TableBody>
-                    {Object.keys(spells).map(s => {
+                    {Object.keys(spells).sort(sortSpells).map(s => {
                         const spell = spell_map[s];
                         const mod = spells[s];
                         const pool = (skills[spell.School] | 0) - parseInt(spell.Complexity) + mod;
@@ -75,7 +83,7 @@ export default class Spells extends React.Component {
 
             <ButtonGroup sx={{ marginTop: 3 }} variant='contained' fullWidth>
                 <TextField fullWidth label="Add Spell" value={this.state.selected} onChange={e => this.setState({ selected: e.target.value })} select>
-                    {spell_list.map(spell => <MenuItem value={spell.Spell} key={spell.Spell}>{spell.Spell}</MenuItem>)}
+                    {spell_list.map(spell => <MenuItem value={spell.Spell} key={spell.Spell}>{spell.School}: {spell.Spell}</MenuItem>)}
                 </TextField>
 
                 <Button onClick={this.add.bind(this)}>Add Spell</Button>
