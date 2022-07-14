@@ -169,7 +169,7 @@ body {
 #connect {
   padding: 10px;
   width: 90%;
-  margin: 0 5%;
+  margin: 2% 5%;
 }
 
 #connect ~ .dices {
@@ -191,6 +191,11 @@ body {
 }
 
 @media (orientation: landscape) and (min-width: 1000px) {
+    #connect {
+      width: calc(100% - 60px);
+      margin: 0px 30px;
+    }
+
     .dices, .summary {
       margin: 30px;
       gap: 10px;
