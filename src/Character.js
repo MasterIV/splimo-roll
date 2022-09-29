@@ -1,25 +1,20 @@
-
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import {createTheme, ThemeProvider} from '@mui/material/styles';
 
-import {
-    Tabs,
-    Tab,
-    Grid,
-    Modal,
-} from '@mui/material';
+import {Grid, Tab, Tabs,} from '@mui/material';
 
 import Skills from './Skills';
 import DiceArea from './DiceArea';
-import { rollDice, rerollDice } from './Dice';
+import {rerollDice, rollDice} from './Dice';
 import Spells from './Spells';
 import DiceSlider from './DiceSlider';
 import {connection} from './Connect';
 import Account from './Account';
-import { Btn } from './common';
+import {Btn} from './common';
 import Summary from './Summary';
 import Result from './Result';
 import XpSummary from './XpSummary';
+import axios from "axios";
 
 const darkTheme = createTheme({
     palette: {
@@ -42,19 +37,21 @@ let rollId = 1;
 export default class CharacterSheet extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             tab: 0,
             message: null,
             status: connecting,
             account: JSON.parse(localStorage.getItem('account') || "null"),
-            skills: JSON.parse(localStorage.getItem('skills') || "{}"),
-            spells: JSON.parse(localStorage.getItem('spells') || "{}"),
+            skills: JSON.parse(localStorage.getItem('skills')),
+            spells: JSON.parse(localStorage.getItem('spells')),
             xp: JSON.parse(localStorage.getItem('xp') || "{}"),
             pool: 0,
             result: [],
             log: [],
         };
+
+        const {account} = this.state;
+        this.loadCharacter(account);
 
         this.change = this.change.bind(this);
         this.roll = this.roll.bind(this);
@@ -63,20 +60,57 @@ export default class CharacterSheet extends React.Component {
         this.showRoll = this.showRoll.bind(this);
     }
 
+    loadCharacter(account) {
+        if (account !== null) {
+            const params = new URLSearchParams();
+            params.append('method', 'load');
+            params.append('playerName', account.name);
+            params.append('characterName', account.player);
+            axios.post('https://splimo.walth-web.de/', params).then((response) => {
+                if (response.data !== null) {
+                    const character = JSON.parse(response.data.data);
+                    if (character.skills !== null) {
+                        this.state.skills = character.skills;
+                    }
+                    if (character.spells !== null) {
+                        this.state.spells = character.spells;
+                    }
+                }
+            });
+        }
+    }
+
     change(stat, value, callback) {
         localStorage.setItem(stat, JSON.stringify(value));
         this.setState({[stat]: value}, callback);
     }
 
+    save() {
+        const {account} = this.state;
+        const {skills} = this.state;
+        const {spells} = this.state;
+        if (account !== null) {
+            const character = {'account': account, 'skills': skills, 'spells': spells};
+            const params = new URLSearchParams();
+            params.append('method', 'save');
+            params.append('playerName', account.name);
+            params.append('characterName', account.player);
+            params.append('character', JSON.stringify(character));
+            axios.post('https://splimo.walth-web.de/', params).then(() => {
+
+            }).catch(error => console.log(error));
+        }
+    }
+
     roll(selection, skill) {
-      const result = rollDice(selection)
-      this.setState({pool: 0});
-      connection.emit('roll', result, skill);
+        const result = rollDice(selection)
+        this.setState({pool: 0});
+        connection.emit('roll', result, skill);
     }
 
     reRoll(picked) {
-      const result = rerollDice(this.state.result, picked);
-      connection.emit('reroll', result);
+        const result = rerollDice(this.state.result, picked);
+        connection.emit('reroll', result);
     }
 
     requestRoll(pool, skill) {
@@ -123,7 +157,7 @@ export default class CharacterSheet extends React.Component {
                 <Account onCreate={account => this.change('account', account, this.componentDidMount.bind(this))} />
             </ThemeProvider>;
 
-        if(status == connecting)
+        if(status === connecting)
             return status;
 
         return <ThemeProvider theme={darkTheme}>
@@ -131,8 +165,11 @@ export default class CharacterSheet extends React.Component {
                 <Grid item xs={5}>
                     <div style={{margin: 10}}>
                         <Grid container spacing={2} alignItems="center">
-                            <Grid item xs={7}>{status}</Grid>
-                            <Grid item xs={5}>
+                            <Grid item xs={6}>{status}</Grid>
+                            <Grid item xs={3}>
+                                <Btn onClick={() => this.save()}>Save</Btn>
+                            </Grid>
+                            <Grid item xs={3}>
                                 <Btn onClick={() => this.change('account', null, () => window.location.reload())}>Disconnect</Btn>
                             </Grid>
                         </Grid>
