@@ -7,6 +7,7 @@ import {
     Tab,
     Grid,
     Modal,
+    CircularProgress,
 } from '@mui/material';
 
 import Skills from './Skills';
@@ -20,6 +21,7 @@ import { Btn } from './common';
 import Summary from './Summary';
 import Result from './Result';
 import XpSummary from './XpSummary';
+import axios from 'axios';
 
 const darkTheme = createTheme({
     palette: {
@@ -37,6 +39,8 @@ const Roll = ({message, result}) => {
 };
 
 const connecting = 'Connecting...';
+const loading = 'Loading...';
+
 let rollId = 1;
 
 export default class CharacterSheet extends React.Component {
@@ -46,7 +50,7 @@ export default class CharacterSheet extends React.Component {
         this.state = {
             tab: 0,
             message: null,
-            status: connecting,
+            status: loading,
             account: JSON.parse(localStorage.getItem('account') || "null"),
             skills: JSON.parse(localStorage.getItem('skills') || "{}"),
             spells: JSON.parse(localStorage.getItem('spells') || "{}"),
@@ -58,6 +62,7 @@ export default class CharacterSheet extends React.Component {
 
         this.change = this.change.bind(this);
         this.roll = this.roll.bind(this);
+        this.save = this.save.bind(this);
         this.reRoll = this.reRoll.bind(this);
         this.requestRoll = this.requestRoll.bind(this);
         this.showRoll = this.showRoll.bind(this);
@@ -106,9 +111,24 @@ export default class CharacterSheet extends React.Component {
         const { account } = this.state;
 
         if(account) {
-            connection.name = `${account.name} (${account.player})`;
-            connection.join(status => this.setState({status}), this.showRoll, account.room);
+            axios.get(`/char/${account.player}-${account.name}`)
+                .then(response => {
+                    this.setState(response.data);
+                }).finally(() => {
+                    this.setState({status: connecting});
+                    connection.name = `${account.name} (${account.player})`;
+                    connection.join(status => this.setState({status}), this.showRoll, account.room);
+                });
         }
+    }
+
+    save() {
+        const { account, skills, spells } = this.state;
+        axios.post(`/char/${account.player}-${account.name}`, JSON.stringify({
+            account, skills, spells, password: window.prompt('Password')
+        }), {
+            headers: {'Content-Type': 'application/json'}
+        }).catch(err => alert(err)).then(resp => alert(resp.data))
     }
 
     render() {
@@ -123,8 +143,13 @@ export default class CharacterSheet extends React.Component {
                 <Account onCreate={account => this.change('account', account, this.componentDidMount.bind(this))} />
             </ThemeProvider>;
 
-        if(status == connecting)
-            return status;
+        if(status == connecting || status == loading)
+            return <ThemeProvider theme={darkTheme}>
+                <div style={{textAlign:'center', margin: 50}}>
+                    <p><CircularProgress size={60} /></p>
+                    <p>{status}</p>
+                </div>
+            </ThemeProvider>;
 
         return <ThemeProvider theme={darkTheme}>
             <Grid container spacing={2}>
@@ -132,7 +157,10 @@ export default class CharacterSheet extends React.Component {
                     <div style={{margin: 10}}>
                         <Grid container spacing={2} alignItems="center">
                             <Grid item xs={7}>{status}</Grid>
-                            <Grid item xs={5}>
+                            <Grid item xs={2}>
+                                <Btn onClick={this.save}>Save</Btn>
+                            </Grid>
+                            <Grid item xs={3}>
                                 <Btn onClick={() => this.change('account', null, () => window.location.reload())}>Disconnect</Btn>
                             </Grid>
                         </Grid>
