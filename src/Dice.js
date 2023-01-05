@@ -6,6 +6,8 @@ class Side {
   }
 }
 
+const url = new URL(window.location.href);
+
 const success = new Side('success');
 const successExplode = new Side('successExplode', 'success', 1);
 const successAnxiety = new Side('successAnxiety');
@@ -17,7 +19,12 @@ const armor = new Side('armor');
 const staminaRegen = new Side('staminaRegen');
 const anxietyRegen = new Side('anxietyRegen');
 
-export const dice = {
+export const dice = url.hash === '#newdice' ? {
+  'standard': [ successExplode, success, success, success, sliver, moon, xp ],
+  'reckless': [ successExplode, successAnxiety, successAnxiety, successAnxiety, sliver, sliver, sliver, sliver, xp ],
+  'insight': [ moonExplod, anxietyRegen, staminaRegen, staminaRegen, moon, moon, moon, moon, moon, xp ],
+  'defense': [ success, success, armor, armor, armor, armor, armor, successAnxiety, successAnxiety, sliver, sliver, moon, xp ]
+} : {
   'standard': [ successExplode, success, success, success, sliver, moon, xp ],
   'reckless': [ successExplode, successAnxiety, successAnxiety, successAnxiety, sliver, sliver, sliver, sliver, xp ],
   'insight': [ moonExplod, anxietyRegen, staminaRegen, staminaRegen, moon, moon, moon, moon, moon, xp ],
