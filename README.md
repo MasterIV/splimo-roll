@@ -1,9 +1,17 @@
-# Getting Started with Create React App
+# Splittermond Dice tool
+
+This is a dice rolling tool to simulate custom dice for an adaptation of the Splittermond tabletop RPG game.
+
+Execute `npm run build` and `node server.js` to start the application on port 3080. 
+After starting the application the following paths are available:
+
+* **/**: Basic dice rolling also optimized for mobile devices.
+* **/log**: The basic tool extended with a log that shows previous rolls.
+* **/char**: Rolling tool with integrated character sheet that allows to make rolls based on skills and spells. Also automatically recordes rolled XP when done through the sheet.
+
+## Create React App Readme
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
 In the project directory, you can run:
 
 ### `npm start`
